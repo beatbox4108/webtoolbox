@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>HTML tag eraser|webtoolbox</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>HTML tag eraser</h1><h6 id="by">by webtoolbox</h6>
+        <details>
+            <summary>sumple</summary>
+            <details>
+                <textarea>あいうえお
+<div>aiueo</div>&copy;
+&nbsp;aiueo<br>&nbsp;k<br>&nbsp;s<br>
+<a>1234567890</a>
+<code>print("aiueo")//pythoncode</code></textarea>
+            </details>
+        </details>
+        <textarea id="input" placeholder="please input"></textarea><br>
+        <textarea id="output" placeholder="output"></textarea>
+        <button id="replace">change!</button>
+        <script>
+            document.getElementById("replace").addEventListener("click",function(){
+                const input =document.getElementById("input");
+                const result = document.getElementById("output")
+                let output=input.value;
+                output=output.replace(/<div[^>]*>/g,"\n").replace(/<\/div>/g,"\n").replace(/<br>/g,"\n").replace(/<\\br>/g,"\n")
+                output=output.replace(/<code[^>]*>/g,"code----------\n").replace(/<\/code[^>]*>/g,"\n--------------")
+                output=output.replace(/<.[^>]*>/g,"")
+                output=output.replace(/&nbsp/," ").replace(/&copy/,"©")
+                result.value=output
+            });
+        </script>
+    </body>
+</html>
