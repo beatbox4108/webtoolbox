@@ -1,0 +1,72 @@
+:root{
+    background-color: #1e1e1e;
+    color:white
+}
+a{
+    color:aqua;
+    text-decoration: none;
+    transition-duration: 1s;
+}
+a:visited{
+    color: rgb(25, 222, 222);
+}
+a:hover{
+    color:rgb(50, 180, 180);
+}
+.open-close{
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0);
+    font-size: 1.5em;
+    font-weight: bold;
+}
+@keyframes open-close-hover-action {
+    0%{
+        border-color: rgba(0, 0, 0, 0);
+    }50%{
+        border-color: rgba(0, 255, 255, 0.25);
+    }100%{
+        border-color: rgba(0, 255, 255, 0.5);
+    }
+}
+textarea{
+    color: burlywood;
+    background-color: #1a1a1a;
+}
+input{
+    color: burlywood;
+    background-color: #1a1a1a;
+}
+button{
+    color: #ffffff;
+    background-color: #1a1a1a;
+    outline: 1px solid 222;
+}
+.back-to-home{
+    display: block;
+}
+.open-close:hover{
+    animation-duration: 2.5s;
+    animation-timing-function: ease-in-out;
+    animation-name: open-close-hover-action;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    border-color: rgba(0, 255, 255, 0.5);
+}
+.open-close .content{
+    font-size: initial;
+    font-weight: initial;
+}
+@keyframes recomend-bg-animate{
+    0%{
+        background-color: linear-gradient(left top to right bottom,  #ffffff00, yellow, #ffffff00);
+    }50%{
+        background-color: linear-gradient(left top to right bottom,  #ffffff00, #ffffff00, yellow);
+    }100%{
+        background-color: linear-gradient(left top to right bottom,  yellow, #ffffff00, #ffffff00);
+    }
+}
+.open-close{
+    animation: recomend-bg-animate 0 ease-in-out 1 infinite forwards initial;
+    animation-play-state: running;
+}

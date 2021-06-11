@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Microwave wattage transducer|WebToolBox</title><noscript><title>⚠Please Enable JavaScript!|Microwave wattage transducer|WebToolBox</title></noscript>
+        <link href="./common.css" rel="stylesheet">
+        <script src="https://www.beatbox4108.tk/media/js/content.js"></script>
+    </head>
+    <body>
+        <h1>Microwave wattage transducer</h1><h6 id="by">by webtoolbox</h6>
+        <noscript><span style="color: yellow;background-color: blue;">⚠Please enable JavaScript!</span><br></noscript>
+        <a class="back-to-home" href="./index.html">back to home</a>
+        <fieldset>
+            <legend>Input:</legend>
+            <input min="100" type="number" step="50" value="600" style="width: 100px;" id="wattage">W <input min="0" type="number" step="1" value="0" style="width: 30px;" id="min">m <input min="0" max="59" type="number" step="1" value="00" style="width: 30px;" id="sec">s
+            <br>
+            <h3>to...</h3>
+            <input min="100" type="number" step="50" value="600" style="width: 100px;" id="wattage-out">W
+        </fieldset>
+        <br><fieldset><legend>OutPut<a onclick="calc()">(update)</a>:</legend><div id="output"></div></fieldset>
+        <br>
+        <script>
+            const calc = ()=>{
+                wattage=document.getElementById("wattage");
+                s=document.getElementById("sec");
+                m=document.getElementById("min");
+                wattage_out=document.getElementById("wattage-out");
+                output=document.getElementById("output");
+                out_all_s=((s.value+(m.value*60))*wattage.value)/wattage_out.value
+                out_s=out_all_s%60
+                out_m=(out_all_s-out_s)/60
+                output.innerHTML=`<input value="${out_m}" type="number" disabled style="width: 30px;">m<input value="${out_s}" type="number" disabled style="width: 30px;">s`
+            }
+            document.getElementById("wattage-out").addEventListener("change",calc)
+            document.getElementById("wattage").addEventListener("change",calc)
+            document.getElementById("sec").addEventListener("change",calc)
+            document.getElementById("min").addEventListener("change",calc)
+            calc()
+        </script>
+    </body>
+</html>
