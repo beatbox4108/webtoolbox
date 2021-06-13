@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Memo|WebToolBox</title><noscript><title>⚠Please Enable JavaScript!|Memo|WebToolBox</title></noscript>
+        <link href="./common.css" rel="stylesheet">
+        <script src="https://www.beatbox4108.tk/media/js/content.js"></script>
+        <style>
+            #area{
+                display: block;
+                resize: none;
+                width:80%;
+                height: 50vh;
+                text-align: left;
+            }
+            main{
+                text-align: center;
+            }
+            .hide{
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Memo</h1><h6 id="by">by webtoolbox</h6>
+        <noscript><span style="color: yellow;background-color: blue;">⚠Please enable JavaScript!</span><br></noscript>
+        <a class="back-to-home" href="./index.html">back to home</a>
+        <main>
+            <fieldset style="text-align: left;">
+                <legend>YourMemos</legend>
+                <input type="text" id="name-input"><button onclick="new_memo()">new</button>
+                <div id="memolist">
+
+                </div>
+            </fieldset>
+            <fieldset id="config">
+                <legend>config</legend>
+                <button type="button" onclick="sync()">appry changes</button><button type="button" onclick="readmemos()">clear changes</button>
+                <label>open<input type="checkbox" id="openconfig"></label>
+                <div id="config-area" class="hide">
+                    <fieldset>
+                        <legend>restore</legend>
+                        restore will clear in leave this page!
+                        <button onclick="showrestore()">reload restore</button><button onclick="if(confirm('changes will clear! continue?')){restore=[];showrestore()}">clear restore</button>
+                        <div id="restore"></div>
+                    </fieldset>
+                    <button onclick="if(confirm('Are you really?\nAll data and settings will reset!\nContinue?')){reset()}"><span style="color: red;">reset</span></button>
+                </div>
+            </fieldset>
+            <fieldset id="dialog" class="hide"></fieldset>
+            <fieldset><legend>Opening file</legend><div id="opened-file-name">Not Opened!</div></fieldset>
+            <div id="input" class="hide">
+                <textarea id="area" placeholder="Let's input and push save button!"></textarea>
+                <button id="save-as" onclick="savedialog()"><abbr title="save to other file.">save as...</abbr></button><button id="save"><abbr title="save to this file">save</abbr></button><button id="clear" onclick="if(confirm('Are you really? Changes will clear!')){document.getElementById('area').value=''}">clear</button><button onclick="closememo()">close</button>
+            </div>
+            <button onclick="if(document.getElementById('openconfig').checked){}else{document.getElementById('input').classList.remove('hide')}">open editer</button>
+            <div class="status" id="status"></div>
+        </main>
+        
+        <script>
+            if(localStorage.getItem("memo")==undefined){
+                localStorage.setItem("memo",JSON.stringify({data:[{name:"unnamed",text:"Hello!"}]}));
+            }
+            let file;
+            let restore=[]
+            let opening=undefined
+            const status=document.getElementById("status")
+            document.getElementById("openconfig").addEventListener("change",()=>{
+                if(document.getElementById("config-area").classList.contains("hide")){
+                    document.getElementById("config-area").classList.remove("hide")
+                    document.getElementById("input").classList.add("hide")
+                    document.getElementById("dialog").classList.add("hide")
+                }else{
+                    document.getElementById("config-area").classList.add("hide")
+                }
+            })
+            const update_memos=()=>{
+                let index=0
+                document.getElementById("memolist").innerHTML=""
+                file.forEach(element => {
+                    document.getElementById("memolist").insertAdjacentHTML("afterbegin",`<div class="memo-item"><span class="title">${element.name}</span><button onclick="openmemo(${index})">open</button><button onclick="renamememo(${index})">rename</button><button onclick="removememo(${index})">remove</button><a target="_blank" download="${file[index].name}.txt" href="data:text/plain,${encodeURIComponent(file[index].text)}\n"><button>export</button></a><a target="_blank" href="data:text/plain,${encodeURIComponent(file[index].text)}\n"><button>view in newtab</button></a><span class="technical-data"><abbr title="${index} is this id!">id</abbr> </span></div>`)
+                    index+=1
+                });
+            }
+            const sync=()=>{
+                let data={}
+                data.data=file
+                localStorage.setItem("memo",JSON.stringify(data));
+            }
+            const reset=()=>{
+                localStorage.removeItem("memo")
+                location.reload(1)
+            }
+            const readmemos=()=>{
+                file=JSON.parse(localStorage.getItem("memo")).data
+                update_memos()
+            }
+            const showrestore=()=>{
+                let index=0
+                document.getElementById("restore").innerHTML=""
+                restore.forEach(element => {
+                    document.getElementById("restore").insertAdjacentHTML("afterbegin",`<div class="restore-item"><span class="title">${element.name}</span><button onclick="restoreitem(${index})">restore</button><button onclick="removeitemrestore(${index})">remove</button><a target="_blank" download="${restore[index].name}.txt" href="data:text/plain,${encodeURIComponent(restore[index].text)}\n"><button>export</button></a><a target="_blank"href="data:text/plain,${encodeURIComponent(restore[index].text)}\n"><button>view in newtab</button></a><span class="technical-data"><abbr title="${index} is this restore id!">restore id</abbr> </span></div>`)
+                    index+=1
+                });
+            }
+            const removeitemrestore=(id)=>{
+                if(confirm("Are You really remove \""+restore[id].name+"\" ?")==false){return}
+                restore.shift(id)
+                
+                showrestore()
+            }
+            const restoreitem=(id)=>{
+                file.push(restore.shift(id))
+                status.textContent="restored!"
+                showrestore()
+                update_memos()
+            }
+            const new_memo=()=>{
+                if(document.getElementById("name-input").value==""){alert("Please input filename!");return}
+                let memodoc={}
+                memodoc.name=document.getElementById("name-input").value
+                memodoc.text="Let's input!"
+                file.push(memodoc)
+                update_memos()
+                openmemo(file.length-1)
+            }
+            const closememo=()=>{
+                document.getElementById("opened-file-name").textContent="Not Opened!"
+                opening=undefined
+                document.getElementById("input").classList.add("hide")
+            }
+            const removememo=(id)=>{
+                if(confirm("Are You really remove \""+file[id].name+"\" ?")==false){return}
+                restore.push(file.shift(id))
+                if(id==opening){
+                    closememo()
+                }
+                update_memos()
+            }
+            const savedialog=()=>{
+                document.getElementById("input").classList.add("hide")
+                document.getElementById("config").classList.add("hide")
+                document.getElementById("dialog").classList.remove("hide")
+                let index=0
+                document.getElementById("dialog").innerHTML=""
+                document.getElementById("dialog").insertAdjacentHTML("afterbegin","<legend>Select file<legend>")
+                document.getElementById("dialog").insertAdjacentHTML("afterbegin","<button onclick=\"savedialog()\">reload</button>")
+                document.getElementById("dialog").insertAdjacentHTML("afterbegin","<button onclick=\"savecancel()\">cancel</button>")
+                file.forEach(element => {
+                    
+                    document.getElementById("dialog").insertAdjacentHTML("afterbegin",`<div class="memo-item"><span class="title">${element.name}</span><button onclick="save_select(${index})">select</button></div>`)
+                    index+=1
+                });
+            }
+            const savecancel=()=>{
+                document.getElementById("dialog").classList.add("hide")
+                document.getElementById("input").classList.remove("hide")
+            }
+            const renamememo=(id)=>{
+                file[id].name=prompt(file[id].name+" rename to...:")
+                if(id==opening){
+                    document.getElementById("opened-file-name").textContent=file[id].name
+                }
+                update_memos()
+            }
+            const save_select=(id)=>{
+                document.getElementById("dialog").classList.add("hide")
+                document.getElementById("config").classList.remove("hide")
+                document.getElementById("input").classList.remove("hide")
+                savememo(id)
+            }
+            const openmemo=(id)=>{
+                document.getElementById("opened-file-name").textContent=file[id].name
+                document.getElementById("input").classList.remove("hide")
+                document.getElementById("area").value=file[id].text
+                document.getElementById("save").onclick=`savememo(${id})`
+                opening=id
+                status.textContent="loaded!"
+            }
+            
+            const savememo=(id)=>{
+                {file[id].text=document.getElementById("area").value};
+                status.textContent="saved!"
+            }
+            readmemos()
+            document.addEventListener("c")
+        </script>
+        <footer style="text-align: center;" class="content-js" data-content-type="footer"></footer>
+    </body>
+</html>
