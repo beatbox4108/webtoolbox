@@ -3,7 +3,7 @@
     <head><meta charset="utf-8"><title>textview</title></head>
     <body>
         <script>
-            document.write(decodeURIComponent(location.hash.replace("#","")))
+            document.write(`<pre>${decodeURIComponent(location.hash.replace("#","")).replace("\n","\n<\\br>\n")}</pre>`)
         </script>
     </body>
 </html>
