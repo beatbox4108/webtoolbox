@@ -226,6 +226,7 @@
             }
             readmemos()
             window.addEventListener('beforeunload', (event) => {
+                event.preventDefault()
                 sync()
             });
         </script>
