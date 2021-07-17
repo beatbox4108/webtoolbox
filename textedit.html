@@ -79,7 +79,7 @@
                 let index=0
                 document.getElementById("memolist").innerHTML=""
                 file.forEach(element => {
-                    if(element.name.search(document.getElementById("search"))){
+                    if(element.name.indexOf(document.getElementById("search").value)!=-1 || document.getElementById("search").value==""){
                         document.getElementById("memolist").insertAdjacentHTML("afterbegin",`<div class="memo-item"><span class="title">${element.name}</span><button onclick="openmemo(${index})">open</button><button onclick="renamememo(${index})">rename</button><button onclick="removememo(${index})">remove</button><a target="_blank" download="${file[index].name}.txt" href="data:text/plain,${encodeURIComponent(file[index].text)}\n"><button>export</button></a><a target="_blank" href="/devbox/textviewer.html#${encodeURIComponent(file[index].text)}\n"><button>view in newtab</button></a><span class="technical-data"><abbr title="${index} is this id!">id</abbr> </span></div>`)
                     }
                     index+=1
