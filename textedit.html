@@ -27,7 +27,9 @@
         <main>
             <fieldset style="text-align: left;">
                 <legend>YourMemos</legend>
-                <input type="text" id="name-input"><button onclick="new_memo()">new</button><button onclick="update_memos()">Update Memolist</button>
+                <label>creatememo:<input type="text" id="name-input"><button onclick="new_memo()">new</button></label>
+                <button onclick="update_memos()">Update Memolist</button><br>
+                <label><input id="search" autocomplete="off" type="search" placeholder="search your memos." oninput="update_memos()"></label>
                 <div id="memolist">
 
                 </div>
@@ -77,7 +79,9 @@
                 let index=0
                 document.getElementById("memolist").innerHTML=""
                 file.forEach(element => {
-                    document.getElementById("memolist").insertAdjacentHTML("afterbegin",`<div class="memo-item"><span class="title">${element.name}</span><button onclick="openmemo(${index})">open</button><button onclick="renamememo(${index})">rename</button><button onclick="removememo(${index})">remove</button><a target="_blank" download="${file[index].name}.txt" href="data:text/plain,${encodeURIComponent(file[index].text)}\n"><button>export</button></a><a target="_blank" href="/devbox/textviewer.html#${encodeURIComponent(file[index].text)}\n"><button>view in newtab</button></a><span class="technical-data"><abbr title="${index} is this id!">id</abbr> </span></div>`)
+                    if(element.name.search(document.getElementById("search"))){
+                        document.getElementById("memolist").insertAdjacentHTML("afterbegin",`<div class="memo-item"><span class="title">${element.name}</span><button onclick="openmemo(${index})">open</button><button onclick="renamememo(${index})">rename</button><button onclick="removememo(${index})">remove</button><a target="_blank" download="${file[index].name}.txt" href="data:text/plain,${encodeURIComponent(file[index].text)}\n"><button>export</button></a><a target="_blank" href="/devbox/textviewer.html#${encodeURIComponent(file[index].text)}\n"><button>view in newtab</button></a><span class="technical-data"><abbr title="${index} is this id!">id</abbr> </span></div>`)
+                    }
                     index+=1
                 });
             }
@@ -135,6 +139,8 @@
                     closememo()
                 }
                 update_memos()
+                showrestore()
+                status.textContent="removed! you can restore removed item.if you close this window,removed item will be completely erased. "
             }
             const savedialog=()=>{
                 document.getElementById("input").classList.add("hide")
@@ -183,7 +189,6 @@
                 update_memos()
             }
             readmemos()
-            document.addEventListener("c")
         </script>
         <footer style="text-align: center;" class="content-js" data-content-type="footer"></footer>
     </body>
