@@ -27,7 +27,7 @@
         <main>
             <fieldset style="text-align: left;">
                 <legend>YourMemos</legend>
-                <input type="text" id="name-input"><button onclick="new_memo()">new</button>
+                <input type="text" id="name-input"><button onclick="new_memo()">new</button><button onclick="update_memos()">Update Memolist</button>
                 <div id="memolist">
 
                 </div>
@@ -180,6 +180,7 @@
             const savememo=(id)=>{
                 {file[id].text=document.getElementById("area").value};
                 status.textContent="saved!"
+                update_memos()
             }
             readmemos()
             document.addEventListener("c")
