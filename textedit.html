@@ -225,6 +225,9 @@
                 update_memos()
             }
             readmemos()
+            window.addEventListener('beforeunload', (event) => {
+                sync()
+            });
         </script>
         <footer style="text-align: center;" class="content-js" data-content-type="footer"></footer>
     </body>
