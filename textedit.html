@@ -170,7 +170,7 @@
             }
             const removememo=(id)=>{
                 if(confirm("Are You really remove \""+file[id].name+"\" ?")==false){return}
-                restore.push(file.shift(id))
+                restore.join(file.splice(id,1))
                 if(id==opening){
                     closememo()
                 }
