@@ -30,6 +30,7 @@
                 <label>creatememo:<input type="text" id="name-input"><button onclick="new_memo()">new</button></label>
                 <button onclick="update_memos()">Update Memolist</button><br>
                 <label><input id="search" autocomplete="off" type="search" placeholder="search your memos." oninput="update_memos()"></label>
+                <br><button onclick="select_page(1)">first</button><button onclick="select_page(2)">back</button><input type="number" min="1" max="1" id="page" value="1"><button onclick="select_page(3)">next</button><button onclick="select_page(4)">last</button>
                 <div id="memolist">
 
                 </div>
@@ -63,6 +64,7 @@
                 localStorage.setItem("memo",JSON.stringify({data:[{name:"unnamed",text:"Hello!"}]}));
             }
             let file;
+            let onepage_items=10
             let restore=[]
             let opening=undefined
             const status=document.getElementById("status")
@@ -75,14 +77,40 @@
                     document.getElementById("config-area").classList.add("hide")
                 }
             })
+            const select_page=(type)=>{
+                let maxpage=Math.ceil(file.length/onepage_items)
+                document.getElementById("page").max=Math.ceil(file.length/onepage_items)
+                switch(type){
+                    case 1:
+                        document.getElementById("page").value=1
+                        break;
+                    case 2:
+                        if(document.getElementById("page").value != 1){
+                            document.getElementById("page").value-=1
+                        }
+                        break;
+                    case 3:
+                        if(document.getElementById("page").value != maxpage){
+                            document.getElementById("page").value++
+                        }
+                        break;
+                    case 4:
+                        document.getElementById("page").value=maxpage
+                        break
+                }
+                if(type!=-1){update_memos()}
+            }
             const update_memos=()=>{
+                select_page(-1)
                 let index=0
                 let results=0
                 document.getElementById("memolist").innerHTML=""
                 if(document.getElementById("search").value!=""){document.getElementById("memolist").insertAdjacentHTML("afterbegin",`<span style="color:aqua">searching “${document.getElementById("search").value}”</span>`)}
                 file.forEach(element => {
                     if(element.name.indexOf(document.getElementById("search").value)!=-1 || document.getElementById("search").value==""){
-                        document.getElementById("memolist").insertAdjacentHTML("beforeend",`<div class="memo-item"><span class="title">${element.name}</span><button onclick="openmemo(${index})">open</button><button onclick="renamememo(${index})">rename</button><button onclick="removememo(${index})">remove</button><a target="_blank" download="${file[index].name}.txt" href="data:text/plain,${encodeURIComponent(file[index].text)}\n"><button>export</button></a><a target="_blank" href="/devbox/textviewer.html#${encodeURIComponent(file[index].text)}\n"><button>view in newtab</button></a><span class="technical-data"><abbr title="${index} is this id!">id</abbr> </span></div>`)
+                        if(((document.getElementById("page").value-1)*onepage_items)< results && (document.getElementById("page").value*onepage_items)+1> results){
+                            document.getElementById("memolist").insertAdjacentHTML("beforeend",`<div class="memo-item"><span class="title">${element.name}</span><button onclick="openmemo(${index})">open</button><button onclick="renamememo(${index})">rename</button><button onclick="removememo(${index})">remove</button><a target="_blank" download="${file[index].name}.txt" href="data:text/plain,${encodeURIComponent(file[index].text)}\n"><button>export</button></a><a target="_blank" href="/devbox/textviewer.html#${encodeURIComponent(file[index].text)}\n"><button>view in newtab</button></a><span class="technical-data"><abbr title="${index} is this id!">id</abbr> </span></div>`)
+                        }
                         results++
                     }
                     index++
